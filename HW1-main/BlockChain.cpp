@@ -80,7 +80,7 @@ void BlockChainAppendTransaction(
 BlockChain BlockChainLoad(ifstream& file){
     BlockChain head;
     string line, sender, receiver, val, timestamp;
-    unsigned int value;
+    unsigned int value = 0;
     BlockChain* blockChain = &head;
     while (file >> sender >> receiver >> val >> timestamp){
         value = stoi(val);
@@ -121,7 +121,11 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file){
     }
     const BlockChain* current = &blockChain;
     while(current != nullptr){
-        file << hash(current->transaction.value, current->transaction.sender, current->transaction.receiver);
+        // declare sender, receiver, value to avoid the code line of  "hash()" call to cross 100 characters
+        string sender = current->transaction.sender;
+        string receiver = current->transaction.receiver;
+        unsigned int value = current->transaction.value;
+        file << hash(value, sender, receiver);
         if (current->nextBlock != nullptr){
             file << std::endl;
         }
@@ -131,10 +135,14 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file){
 
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file){
     const BlockChain* current = &blockChain;
-    string id;
+    string transactionID;
     while(current != nullptr){
-        file >> id;
-        if (id != hash(current->transaction.value, current->transaction.sender, current->transaction.receiver)){
+        // declare sender, receiver, value to avoid the code line of  "hash()" call to cross 100 characters
+        string sender = current->transaction.sender;
+        string receiver = current->transaction.receiver;
+        unsigned int value = current->transaction.value;
+        file >> transactionID;
+        if (transactionID != hash(value, sender, receiver)){
             return false;
         }
         current = current->nextBlock;
@@ -156,7 +164,11 @@ void BlockChainCompress(BlockChain& blockChain){
     BlockChain* current = &blockChain;
     BlockChain* next = current->nextBlock;
     while(next != nullptr){
-        if (current->transaction.sender == next->transaction.sender && current->transaction.receiver == next->transaction.receiver){
+        string currentSender = current->transaction.sender;
+        string currentReceiver = current->transaction.receiver;
+        string nextSender = next->transaction.sender;
+        string nextReceiver = next->transaction.receiver;
+        if (currentSender == nextSender && currentReceiver == nextReceiver){
             current->transaction.value += next->transaction.value;
             current->nextBlock = next->nextBlock;
             delete next;
