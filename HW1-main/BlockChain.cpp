@@ -132,11 +132,6 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file){
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file){
     const BlockChain* current = &blockChain;
     string id;
-    //int BchainSize = BlockChainGetSize(blockChain);
-    //string* transactionIDs = new string[BchainSize];
-
-    //for(int i = 0 ; i <)
-    
     while(current != nullptr){
         file >> id;
         if (id != hash(current->transaction.value, current->transaction.sender, current->transaction.receiver)){
@@ -174,73 +169,6 @@ void BlockChainCompress(BlockChain& blockChain){
     }
 }
 
-
-/*void BlockChainCompress(BlockChain& blockChain){
-    int size = BlockChainGetSize(blockChain);
-    if (blockChain.time == "" || size == 1){
-        return;
-    }
-    BlockChain* current = &blockChain;
-    while(current != nullptr){
-        BlockChain* prev = &blockChain;
-        BlockChain* run = &blockChain;
-        string sender = current->transaction.sender;
-        string receiver = current->transaction.receiver;
-        while(run != nullptr){
-            if (run == current){
-                prev = run;
-                run = run->nextBlock;
-                continue;
-            }
-            if (run->transaction.sender == sender && run->transaction.receiver == receiver){
-                current->transaction.value += run->transaction.value;
-                prev->nextBlock = run->nextBlock;
-                BlockChain* temp = run;
-                run = run->nextBlock;
-                delete temp;
-            }
-            else{
-                break;
-            }
-        }
-        current = current->nextBlock;
-    }
-}
-
-void BlockChainCompress(BlockChain& blockChain){
-    int size = BlockChainGetSize(blockChain);
-    if (blockChain.time == "" || size == 1){
-        return;
-    }
-    BlockChain* current = &blockChain;
-
-
-    while(current != nullptr){
-        BlockChain* prev = &blockChain;
-        BlockChain* run = &blockChain;
-        string sender = current->transaction.sender;
-        string receiver = current->transaction.receiver;
-        while(run != nullptr){
-            if (run == current){
-                prev = run;
-                run = run->nextBlock;
-                continue;
-            }
-            if (run->transaction.sender == sender && run->transaction.receiver == receiver){
-                current->transaction.value += run->transaction.value;
-                prev->nextBlock = run->nextBlock;
-                BlockChain* temp = run;
-                run = run->nextBlock;
-                delete temp;
-            }
-            else{
-                prev = run;
-                run = run->nextBlock;
-            }
-        }
-        current = current->nextBlock;
-    }
-}*/
 
 void BlockChainTransform(BlockChain& blockChain, updateFunction function){
     BlockChain* current = &blockChain;
