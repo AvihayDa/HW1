@@ -159,6 +159,28 @@ void BlockChainCompress(BlockChain& blockChain){
         return;
     }
     BlockChain* current = &blockChain;
+    BlockChain* next = current->nextBlock;
+    while(next != nullptr){
+        if (current->transaction.sender == next->transaction.sender && current->transaction.receiver == next->transaction.receiver){
+            current->transaction.value += next->transaction.value;
+            current->nextBlock = next->nextBlock;
+            delete next;
+            next = current->nextBlock;
+        }
+        else{
+            current = next;
+            next = next->nextBlock;
+        }
+    }
+}
+
+
+/*void BlockChainCompress(BlockChain& blockChain){
+    int size = BlockChainGetSize(blockChain);
+    if (blockChain.time == "" || size == 1){
+        return;
+    }
+    BlockChain* current = &blockChain;
     while(current != nullptr){
         BlockChain* prev = &blockChain;
         BlockChain* run = &blockChain;
@@ -185,7 +207,7 @@ void BlockChainCompress(BlockChain& blockChain){
     }
 }
 
-/*void BlockChainCompress(BlockChain& blockChain){
+void BlockChainCompress(BlockChain& blockChain){
     int size = BlockChainGetSize(blockChain);
     if (blockChain.time == "" || size == 1){
         return;
